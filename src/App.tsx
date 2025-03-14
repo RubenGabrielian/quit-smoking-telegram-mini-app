@@ -42,8 +42,8 @@ const saveToStorage = async (data: SmokingData[]) => {
 const loadFromStorage =  () => {
   try {
       const data =  WebApp.CloudStorage.getItem('smokingData')
+      debugger
       console.log(data,'riben');
-      console.log(data?.result);
       // return data ? JSON.parse(data) : [];
       return data;
   } catch (error) {
