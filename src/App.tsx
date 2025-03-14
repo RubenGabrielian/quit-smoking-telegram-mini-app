@@ -16,7 +16,7 @@ const saveToStorage = async (data: SmokingData[]) => {
 
 
   try {
-    await cloudStorage.setItem("smokingData", JSON.stringify(data));
+    await WebApp.CloudStorage.setItem("smokingData", JSON.stringify(data));
   } catch (error) {
     console.error("Error saving data:", error);
   }
@@ -39,21 +39,14 @@ const saveToStorage = async (data: SmokingData[]) => {
   // }
 };
 
-const loadFromStorage = async (): Promise<SmokingData[]> => {
+const loadFromStorage = async () => {
   try {
-      const data = await cloudStorage.getItem('smokingData');
-      return data ? JSON.parse(data) : [];
-   
+      const data = await WebApp.CloudStorage.getItem('smokingData')
+      // return data ? JSON.parse(data) : [];
+      console.log(data);
+      return data;
   } catch (error) {
     console.error('Error loading data:', error);
-    // Fallback to localStorage on error
-    try {
-      const data = localStorage.getItem('smokingData');
-      return data ? JSON.parse(data) : [];
-    } catch (fallbackError) {
-      console.error('Error loading from fallback storage:', fallbackError);
-      return [];
-    }
   }
 };
 
