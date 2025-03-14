@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Cigarette, TrendingDown, Award, Calendar, BarChart2, Home } from 'lucide-react';
 import WebApp from '@twa-dev/sdk';
-import { cloudStorage } from "@telegram-apps/sdk-react";
+import { cloudStorage, getCloudStorageItem } from "@telegram-apps/sdk-react";
 import { format, subDays, parseISO } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -41,8 +41,7 @@ const saveToStorage = async (data: SmokingData[]) => {
 
 const loadFromStorage =  () => {
   try {
-      const data =  WebApp.CloudStorage.getItem('smokingData')
-      debugger
+      const data =  WebApp.CloudStorage.getKeys();
       console.log(data,'riben');
       // return data ? JSON.parse(data) : [];
       return data;
