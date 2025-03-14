@@ -40,29 +40,6 @@ const saveToStorage = async (data: SmokingData[]) => {
 };
 
 
-const saveData = async () => {
-  try {
-    await WebApp.CloudStorage.setItem("smokingData", "Hello, Telegram!");
-    console.log("✅ Data saved successfully!");
-  } catch (error) {
-    console.error("❌ Error saving data:", error);
-  }
-};
-
-const loadData = async () => {
-  try {
-    const data = await WebApp.CloudStorage.getItem("smokingData");
-    console.log("📌 Retrieved data:", data || "No data found!");
-  } catch (error) {
-    console.error("❌ Error retrieving data:", error);
-  }
-};
-
-// Test storing and retrieving data
-saveData().then(() => {
-  setTimeout(loadData, 2000); // Wait 2 seconds before retrieving
-});
-
 const loadFromStorage = async () => {
   try {
       const data = await WebApp.CloudStorage.getItem('smokingData')
@@ -86,6 +63,31 @@ function App() {
     // Initialize Telegram WebApp and load data
     WebApp.ready();
     setUserName(WebApp.initDataUnsafe.user?.first_name || 'User');
+
+    
+const saveData = async () => {
+  try {
+    await WebApp.CloudStorage.setItem("smokingData", "Hello, Telegram!");
+    console.log("✅ Data saved successfully!");
+  } catch (error) {
+    console.error("❌ Error saving data:", error);
+  }
+};
+
+const loadData2 = async () => {
+  try {
+    const data = await WebApp.CloudStorage.getItem("smokingData");
+    console.log("📌 Retrieved data:", data || "No data found!");
+  } catch (error) {
+    console.error("❌ Error retrieving data:", error);
+  }
+};
+
+// Test storing and retrieving data
+saveData().then(() => {
+  setTimeout(loadData2, 2000); // Wait 2 seconds before retrieving
+});
+
 
     const loadData = async () => {
       const data = await loadFromStorage();
