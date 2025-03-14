@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cigarette, TrendingDown, Award, Calendar, BarChart2, Home } from 'lucide-react';
 import WebApp from '@twa-dev/sdk';
-import { CloudStorage } from "@telegram-apps/sdk";
+import { cloudStorage } from "@telegram-apps/sdk-react";
 import { format, subDays, parseISO } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -10,12 +10,16 @@ interface SmokingData {
   count: number;
 }
 
+useEffect(() => {
+  console.log(cloudStorage.isSupported())
+},[]);
+
 // Helper functions for data storage
 const saveToStorage = async (data: SmokingData[]) => {
 
 
   try {
-    await CloudStorage.set("smokingData", JSON.stringify(data));
+    await cloudStorage.setItem("smokingData", JSON.stringify(data));
   } catch (error) {
     console.error("Error saving data:", error);
   }
@@ -40,7 +44,7 @@ const saveToStorage = async (data: SmokingData[]) => {
 
 const loadFromStorage = async (): Promise<SmokingData[]> => {
   try {
-      const data = await CloudStorage.get('smokingData');
+      const data = await cloudStorage.getItem('smokingData');
       return data ? JSON.parse(data) : [];
    
   } catch (error) {
