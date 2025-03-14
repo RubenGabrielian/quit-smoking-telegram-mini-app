@@ -72,7 +72,7 @@ function App() {
 
     const loadData = async () => {
       const data = await loadFromStorage();
-      setSmokingData(data);
+      setSmokingData(data || [1,2]);
     };
 
     loadData();
