@@ -43,7 +43,7 @@ const loadFromStorage = async () => {
   try {
       const data = await WebApp.CloudStorage.getItem('smokingData')
       // return data ? JSON.parse(data) : [];
-      console.log(data);
+      console.log(data,'ruben');
       return data;
   } catch (error) {
     console.error('Error loading data:', error);
