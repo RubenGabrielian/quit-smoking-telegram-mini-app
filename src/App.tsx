@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Cigarette, TrendingDown, Award, Calendar, BarChart2, Home } from 'lucide-react';
 import WebApp from '@twa-dev/sdk';
 import { cloudStorage } from "@telegram-apps/sdk-react";
@@ -10,9 +10,6 @@ interface SmokingData {
   count: number;
 }
 
-useEffect(() => {
-  console.log(cloudStorage.isSupported())
-},[]);
 
 // Helper functions for data storage
 const saveToStorage = async (data: SmokingData[]) => {
