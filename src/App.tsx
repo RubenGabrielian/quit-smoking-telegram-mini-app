@@ -43,7 +43,8 @@ const loadFromStorage =  () => {
   try {
       const data =  WebApp.CloudStorage;
   const a =       data.getItem('smokingData');
-  console.log(a,'aaaaa')
+  let b = a.getItem('smokingData');
+    console.log(b);
       // return data ? JSON.parse(data) : [];
       return data;
   } catch (error) {
