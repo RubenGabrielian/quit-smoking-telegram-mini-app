@@ -119,7 +119,7 @@ function App() {
   );
 
   const StatsPage = () => (
-   
+    <div>sdsd</div>
   );
 
   return (
