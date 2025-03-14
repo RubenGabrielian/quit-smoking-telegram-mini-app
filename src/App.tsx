@@ -39,18 +39,24 @@ const saveToStorage = async (data: SmokingData[]) => {
   // }
 };
 
-
-const loadFromStorage = async () => {
+const loadFromStorage = async (): Promise<SmokingData[]> => {
   try {
       const data = await WebApp.CloudStorage.getItem('smokingData')
       // return data ? JSON.parse(data) : [];
       console.log(data);
-      return data;
+      return data
       
    
   } catch (error) {
     console.error('Error loading data:', error);
-
+    // Fallback to localStorage on error
+    try {
+      const data = localStorage.getItem('smokingData');
+      return data ? JSON.parse(data) : [];
+    } catch (fallbackError) {
+      console.error('Error loading from fallback storage:', fallbackError);
+      return [];
+    }
   }
 };
 
@@ -63,31 +69,6 @@ function App() {
     // Initialize Telegram WebApp and load data
     WebApp.ready();
     setUserName(WebApp.initDataUnsafe.user?.first_name || 'User');
-
-    
-const saveData = async () => {
-  try {
-    await WebApp.CloudStorage.setItem("smokingData", "Hello, Telegram!");
-    console.log("✅ Data saved successfully!");
-  } catch (error) {
-    console.error("❌ Error saving data:", error);
-  }
-};
-
-const loadData2 = async () => {
-  try {
-    const data = await WebApp.CloudStorage.getItem("smokingData");
-    console.log("📌 Retrieved data:", data || "No data found!");
-  } catch (error) {
-    console.error("❌ Error retrieving data:", error);
-  }
-};
-
-// Test storing and retrieving data
-saveData().then(() => {
-  setTimeout(loadData2, 2000); // Wait 2 seconds before retrieving
-});
-
 
     const loadData = async () => {
       const data = await loadFromStorage();
