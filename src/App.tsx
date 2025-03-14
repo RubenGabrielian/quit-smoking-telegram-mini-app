@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cigarette, TrendingDown, Award, Calendar, BarChart2, Home } from 'lucide-react';
 import WebApp from '@twa-dev/sdk';
+import { setCloudStorageItem,getCloudStorageKeys } from '@telegram-apps/sdk';
 import { format, subDays, parseISO } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -12,40 +13,43 @@ interface SmokingData {
 // Helper functions for data storage
 const saveToStorage = async (data: SmokingData[]) => {
   try {
-    // Try Telegram CloudStorage first
-    if (WebApp.CloudStorage) {
-      await WebApp.CloudStorage.setItem('smokingData', JSON.stringify(data));
+    if (setCloudStorageItem.isAvailable()) {
+      await setCloudStorageItem('smokingData', JSON.stringify(data));
     } else {
-      // Fallback to localStorage
+      // Fallback to localStorage if cloud storage is not available
       localStorage.setItem('smokingData', JSON.stringify(data));
     }
   } catch (error) {
     console.error('Error saving data:', error);
-    // Fallback to localStorage if CloudStorage fails
-    localStorage.setItem('smokingData', JSON.stringify(data));
+    // Fallback to localStorage on error
+    try {
+      localStorage.setItem('smokingData', JSON.stringify(data));
+    } catch (fallbackError) {
+      console.error('Error saving to fallback storage:', fallbackError);
+    }
   }
 };
 
 const loadFromStorage = async (): Promise<SmokingData[]> => {
   try {
-    let data: string | null = null;
-    
-    // Try Telegram CloudStorage first
-    if (WebApp.CloudStorage) {
-      data = await WebApp.CloudStorage.getItem('smokingData');
+    if (getCloudStorageItem.isAvailable()) {
+      const data = await getCloudStorageItem('smokingData');
+      return data ? JSON.parse(data) : [];
+    } else {
+      // Fallback to localStorage if cloud storage is not available
+      const data = localStorage.getItem('smokingData');
+      return data ? JSON.parse(data) : [];
     }
-    
-    // If no data in CloudStorage or CloudStorage not available, try localStorage
-    if (!data) {
-      data = localStorage.getItem('smokingData');
-    }
-    
-    return data ? JSON.parse(data) : [];
   } catch (error) {
     console.error('Error loading data:', error);
-    // Try localStorage as fallback
-    const localData = localStorage.getItem('smokingData');
-    return localData ? JSON.parse(localData) : [];
+    // Fallback to localStorage on error
+    try {
+      const data = localStorage.getItem('smokingData');
+      return data ? JSON.parse(data) : [];
+    } catch (fallbackError) {
+      console.error('Error loading from fallback storage:', fallbackError);
+      return [];
+    }
   }
 };
 
@@ -55,12 +59,16 @@ function App() {
   const [smokingData, setSmokingData] = useState<SmokingData[]>([]);
 
   useEffect(() => {
-    // Initialize Telegram WebApp
+    // Initialize Telegram WebApp and load data
     WebApp.ready();
     setUserName(WebApp.initDataUnsafe.user?.first_name || 'User');
 
-    // Load data
-    loadFromStorage().then(setSmokingData);
+    const loadData = async () => {
+      const data = await loadFromStorage();
+      setSmokingData(data);
+    };
+
+    loadData();
   }, []);
 
   useEffect(() => {
